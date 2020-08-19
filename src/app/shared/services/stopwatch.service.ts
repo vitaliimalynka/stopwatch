@@ -25,8 +25,13 @@ export class StopwatchService {
 
   constructor() { }
 
-  startTimer(){
-    this.startTime = Date.now();
+  startTimer(initialTime? : number){
+    if (!initialTime){
+      this.startTime = Date.now();
+    }
+    else{
+      this.startTime = Date.now() - initialTime;
+    }
     this.subscription = this.time$.subscribe(()=>{
       this.timerTimeInMS = Date.now() - this.startTime;
       this.convertTime();

@@ -27,8 +27,16 @@ export class StopwatchComponent implements OnInit, OnDestroy {
   constructor(private stopwatchServise: StopwatchService) { }
   
   runStopwatch(): void{
-    if (!this.isStarted){
+    if (!this.isStarted && !this.isWait){
       this.timer$ = this.stopwatchServise.startTimer();
+      this.subscription = this.stopwatchServise.timerStream$.subscribe( time => {
+           this.timeForDisplay = time;
+      });
+      this.startButton = 'Stop';
+    }
+    else if (!this.isStarted && this.isWait){
+      let currentTime = (+this.timeForDisplay.h*3600 + +this.timeForDisplay.m*60 + +this.timeForDisplay.s)*1000;
+      this.timer$ = this.stopwatchServise.startTimer(currentTime);
       this.subscription = this.stopwatchServise.timerStream$.subscribe( time => {
            this.timeForDisplay = time;
       });
@@ -53,6 +61,9 @@ export class StopwatchComponent implements OnInit, OnDestroy {
         console.log("doble click");
         this.subscription.unsubscribe();
         this.stopwatchServise.subscription.unsubscribe();
+        this.isStarted = false;
+        this.isWait = true;
+        this.startButton = 'Start';
       }
     }
     this.lastClick = event.timeStamp;
