@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { timer, Observable, Subject, BehaviorSubject, Subscription } from 'rxjs';
+import { timer, Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { displayedTime } from '../interfaces/displayed-time';
 
 
@@ -16,11 +16,6 @@ export class StopwatchService {
     m: "00",
     s: "00"
   };
-  private calculatedTime  = {
-    h: 0,
-    m: 0,
-    s: 0
-  }
   public timerStream$: BehaviorSubject <displayedTime> = new BehaviorSubject<displayedTime>(this.timeForDisplay);
 
   constructor() { }
@@ -42,9 +37,9 @@ export class StopwatchService {
   
   convertTime():void{
     let sec = Math.round(this.timerTimeInMS / 1000);
-    let s = this.calculatedTime.s = sec % 60;
-    let h = this.calculatedTime.h = Math.floor(sec / 60 / 60);
-    let m = this.calculatedTime.m = (Math.floor(sec / 60)) - (this.calculatedTime.h * 60);
+    let s = sec % 60;
+    let h = Math.floor(sec / 60 / 60);
+    let m = (Math.floor(sec / 60)) - (h * 60);
     if (h >= 10){
       this.timeForDisplay.h = String(h);
     }
