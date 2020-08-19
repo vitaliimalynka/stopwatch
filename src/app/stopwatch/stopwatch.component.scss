@@ -13,9 +13,13 @@
         width: 75px;
         height: 30px;
         
+        &.green{
+            background-color: green;
+        }
         &.reset-button{
          background-color: red;
         }
+        
         &:disabled{
             background-color: lightgrey;
         }
