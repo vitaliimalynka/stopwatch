@@ -27,21 +27,24 @@ export class StopwatchComponent implements OnInit, OnDestroy {
   constructor(private stopwatchServise: StopwatchService) { }
   
   runStopwatch(): void{
-    if (!this.isStarted && !this.isWait){
-      this.timer$ = this.stopwatchServise.startTimer();
+    // check status of stopwatch
+    if (!this.isStarted){
+      // check status of wait function. When "Wait" not activek, start stopwatch from "00":"00":"00"
+      if (!this.isWait){
+        this.timer$ = this.stopwatchServise.startTimer();
+      }
+      // when "Wait" is active, start stopwatch form current time
+      else if (this.isWait){
+        let currentTime = (+this.timeForDisplay.h*3600 + +this.timeForDisplay.m*60 + +this.timeForDisplay.s)*1000;
+        this.timer$ = this.stopwatchServise.startTimer(currentTime);
+      }
+      // add subsribe for get data for display and change name of "start" button to "stop"
       this.subscription = this.stopwatchServise.timerStream$.subscribe( time => {
            this.timeForDisplay = time;
       });
       this.startButton = 'Stop';
     }
-    else if (!this.isStarted && this.isWait){
-      let currentTime = (+this.timeForDisplay.h*3600 + +this.timeForDisplay.m*60 + +this.timeForDisplay.s)*1000;
-      this.timer$ = this.stopwatchServise.startTimer(currentTime);
-      this.subscription = this.stopwatchServise.timerStream$.subscribe( time => {
-           this.timeForDisplay = time;
-      });
-      this.startButton = 'Stop';
-    }
+    // if status of stopwatch is "run", unsubscribe and change name of "stop" button to "start"
     else{
       this.stopwatchServise.subscription.unsubscribe();
       this.subscription.unsubscribe();
@@ -55,8 +58,11 @@ export class StopwatchComponent implements OnInit, OnDestroy {
   }
 
   pauseStopwatch(event): void {
+    // check previos click to "Wait" button
+    // If it was, calculate the time difference
     if(this.lastClick){
       let diff = event.timeStamp - this.lastClick;
+      // if diff < 300 unsubcribe
       if (diff <= 300){
         console.log("doble click");
         this.subscription.unsubscribe();
@@ -66,6 +72,7 @@ export class StopwatchComponent implements OnInit, OnDestroy {
         this.startButton = 'Start';
       }
     }
+    // add info about last click
     this.lastClick = event.timeStamp;
   }
 

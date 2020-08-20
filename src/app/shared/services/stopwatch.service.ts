@@ -21,12 +21,15 @@ export class StopwatchService {
   constructor() { }
 
   startTimer(initialTime? : number){
+    // check incoming start time. When it's undefined use current time
+    // When  get smth, calculate start time.
     if (!initialTime){
       this.startTime = Date.now();
     }
     else{
       this.startTime = Date.now() - initialTime;
     }
+    // start timer from rxjs for get new time for stopwatch
     this.subscription = this.time$.subscribe(()=>{
       this.timerTimeInMS = Date.now() - this.startTime;
       this.convertTime();
@@ -35,6 +38,7 @@ export class StopwatchService {
     return this.timerStream$.asObservable();
   }
   
+  // this method is used to prepare data for display in the "00":"00":"00" format
   convertTime():void{
     let sec = Math.round(this.timerTimeInMS / 1000);
     let s = sec % 60;
