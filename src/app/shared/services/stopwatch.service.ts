@@ -40,10 +40,10 @@ export class StopwatchService {
   
   // this method is used to prepare data for display in the "00":"00":"00" format
   convertTime():void{
-    let sec = Math.round(this.timerTimeInMS / 1000);
-    let s = sec % 60;
-    let h = Math.floor(sec / 60 / 60);
-    let m = (Math.floor(sec / 60)) - (h * 60);
+    let sec: number = Math.round(this.timerTimeInMS / 1000);
+    let s: number = sec % 60;
+    let h: number = Math.floor(sec / 60 / 60);
+    let m: number = (Math.floor(sec / 60)) - (h * 60);
     if (h >= 10){
       this.timeForDisplay.h = String(h);
     }
